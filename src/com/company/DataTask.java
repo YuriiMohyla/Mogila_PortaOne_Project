@@ -37,22 +37,6 @@ public class DataTask {
 
     }
 
-    public int Max() {
-        int max = -2147483648;  //мін значення int
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] > max) max = array[i];
-        }
-        return max;
-    }
-
-    public int Min() {
-        int min = 2147483647;  //max значення int
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] < min) min = array[i];
-        }
-        return min;
-    }
-
     public double Median() {
         int [] array2 = array.clone();
         Arrays.sort(array2);
@@ -62,59 +46,78 @@ public class DataTask {
             return (double)array2[array2.length/2];
     }
 
-    public double AVG() {
-        long sum = 0;
-        for (int i = 0; i < array.length; i++) sum+=array[i];
-        return (double)sum/array.length;
-    }
-
-    public int Increase() {
-        int count = 1;
-        int rez = 0;
-        int last = 0;
-        for (int i = 0; i < array.length-1; i++) {
-            if (array[i] < array[i+1]) {
-                count++;
-                if (rez < count) {rez=count;last = i; }
-            }
-            else {
-                count = 1;
-            }
-            if (rez < count) {
-                last = i;
-                rez = count;
-            }
-        }
-        for (int i = (last+1) - (rez-1); i <=last+1; i++) System.out.println(array[i] + " ");
-        return rez;
-
-    }
-
-    public int Decreases() {
-        int count = 1;
-        int rez = 0;
-        int last = 0;
-        for (int i = 0; i < array.length-1; i++) {
-            if (array[i] > array[i+1]) {
-                count++;
-                if (rez < count) {rez=count;last = i; }
-            }
-            else {
-                count = 1;
-            }
-            if (rez < count) {
-                last = i;
-                rez = count;
-            }
-        }
-        for (int i = (last+1) - (rez-1); i <=last+1; i++) System.out.println(array[i] + " ");
-        return rez;
-    }
-
     private Integer tryParseInt(String s) {
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e ) { return null;}
+    }
+
+    public void doTask() {
+        long sum = 0;                 //сумма елементов масива
+        int min = Integer.MAX_VALUE;  //max значення int
+        int max =  Integer.MIN_VALUE;  //мін значення int
+        int count = 1;                //временная переменная
+        int count2 = 1;               //временная переменная
+        int rez = 0;                  //переменная хранит кол-во возрастающих
+        int rez2 = 0;                 //переменная хранит кол-во спадающих
+        int last = 0;                 //переменная хранит индекс последнего елемента из возрастающих
+        int last2 = 0;                //переменная хранит индекс последнего елемента из спадающих
+        for (int i = 0; i < array.length-1; i++) {
+            sum+=array[i];                          //подсчет сумы
+
+            if (array[i] > max) max = array[i];     //поиск максимального
+            if (array[i] < min) min = array[i];     //поиск минемального
+
+            /* поиск возростающих последовательностей    */
+            if (array[i] < array[i+1]) {
+                count++;
+                if (rez < count) {
+                    rez=count;
+                    last = i;
+                }
+            }
+            else {
+                count = 1;
+            }
+            if (rez < count) {
+                last = i;
+                rez = count;
+            }
+            /* поиск спадающих последовательностей    */
+            if (array[i] > array[i+1]) {
+                count2++;
+                if (rez2 < count2) {
+                    rez2=count2;
+                    last2 = i;
+                }
+            }
+            else {
+                count2 = 1;
+            }
+            if (rez2 < count2) {
+                last2 = i;
+                rez2 = count2;
+            }
+        }
+
+        if (array[array.length-1] > max) max = array[array.length-1]; // цыкл не обходит последний елемент проверяем отдельно
+        if (array[array.length-1] < min) min = array[array.length-1];
+        sum+=array[array.length-1];   // цыкл не обходит последний елемент доавляэм его в сумму отдельно
+
+        System.out.println("вывод возростающих");
+        for (int i = (last+1) - (rez-1); i <=last+1; i++) {
+            System.out.println(array[i] + " ");                     //вывод возростающих
+        }
+        System.out.println("вывод спадающих");
+        for (int i = (last2+1) - (rez2-1); i <=last2+1; i++) {
+            System.out.println(array[i] + " ");                     //вывод спадающих
+        }
+
+        System.out.println("Масимальное: " + max);
+        System.out.println("Минимальное: " + min);
+        System.out.println("Среднее: " + (double)sum/array.length);
+        System.out.println("Наибольшие последовательности идущих подряд чисел, которые увеличиваются: " + rez);
+        System.out.println("Наибольшие последовательности идущих подряд чисел, которые уменьшаются: " + rez2);
     }
 
 }
